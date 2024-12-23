@@ -425,6 +425,75 @@ SMODS.Joker { -- Midspin
   end
 }
 
+SMODS.Joker { -- Samurai
+  key = 'samurai',
+  loc_txt = {
+    name = 'Samurai',
+    text = {
+      "Scored 7s give {C:mult}+#3# mult", 
+      "{C:inactive,s:0.7}(Idea by {C:dark_edition,s:0.7}#1#{C:inactive,s:0.7}){}",
+      "{C:inactive,s:0.7}(Sprite by {C:dark_edition,s:0.7}#2#{C:inactive,s:0.7}){}"
+    }
+  },
+  rarity = 1,
+  cost = 6,
+  atlas = "rd-jokers-1",
+  pos = { x = 0 , y = 0},
+  config = {  extra = { idea = "nil", sprite = "nil" , mult = 7 } },
+  loc_vars = function(self, info_queue, card)
+    return { vars = {
+        card.ability.extra.idea,
+        card.ability.extra.sprite,
+        card.ability.extra.mult
+    } }
+  end,
+  calculate = function (self, card, context)
+    if context.scoring_hand and context.cardarea == G.play and context.other_card:get_id() == 7 then
+      return {
+        mult_mod = card.ability.extra.mult,
+        message = localize { type = 'variable', key = 'a_mult', vars = { card.ability.extra.mult } }
+      }
+    end
+  end
+}
+
+SMODS.Joker { -- NHH
+  key = 'NHH',
+  loc_txt = {
+    name = 'No hints here',
+    text = {
+      "Gives between {X:mult,C:white}x0.75{} and ",
+      "{X:mult,C:white}x1.5{} Mult randomly", 
+      "{C:inactive,s:0.7}(Idea by {C:dark_edition,s:0.7}#1#{C:inactive,s:0.7}){}",
+      "{C:inactive,s:0.7}(Sprite by {C:dark_edition,s:0.7}#2#{C:inactive,s:0.7}){}"
+    }
+  },
+  rarity = 1,
+  cost = 6,
+  atlas = "rd-jokers-1",
+  pos = { x = 0 , y = 0},
+  config = {  extra = { idea = "nil", sprite = "nil" , Xmult = 1.0 , Xmult_min = 75 , Xmult_max = 150 } },
+  loc_vars = function(self, info_queue, card)
+    return { vars = {
+        card.ability.extra.idea,
+        card.ability.extra.sprite,
+        card.ability.extra.Xmult,
+        card.ability.extra.Xmult_min,
+        card.ability.extra.Xmult_max
+    } }
+  end,
+  calculate = function (self, card, context)
+    if context.joker_main then
+      card.ability.extra.Xmult = (pseudorandom("Charla", card.ability.extra.Xmult_min, card.ability.extra.Xmult_max)/100)
+      return {
+        mult_mod = card.ability.extra.Xmult,
+        message = localize { type = 'variable', key = 'a_xmult', vars = { card.ability.extra.Xmult } }
+      }
+    end
+  end
+}
+
+
 
 --[[
 
