@@ -1,3 +1,6 @@
+local config = SMODS.current_mod.config
+local debug_mode = false
+
 local old_back_apply_to_run = Back.apply_to_run
 function Back.apply_to_run(self)
   old_back_apply_to_run(self)
@@ -63,8 +66,8 @@ function Back.apply_to_run(self)
   end
 end
 
-_RELEASE_MODE = false -- DEBUG MODE
 
+_RELEASE_MODE = false -- DEBUG MODE
 
 SMODS.Back{
 	name = "7 Beat Games Deck",
@@ -74,13 +77,6 @@ SMODS.Back{
     only_one_rank = '7',
     ante_scaling = 1, 
   },
-	loc_txt = {
-		name ="7 Beat Games Deck",
-		text={
-			"Start with a Deck",
-			"full of {C:attention}Sevens{}",
-		},
-    },
 	apply = function(self)
 		G.E_MANAGER:add_event(Event({
 			func = function()
@@ -93,6 +89,21 @@ SMODS.Back{
 	end
 }
 
+--[[
+
+  Config tab, prob
+
+]]
+
+--[[
+ SMODS.current_mod.config_tab = function()
+ 	return {n = G.UIT.ROOT, config = {
+ 		-- config values here, see 'Building a UI' page
+ 	}, nodes = {
+ 		-- work your UI wizardry here, see 'Building a UI' page
+ 	}}
+ end
+]]
 
 --[[
 
@@ -121,26 +132,189 @@ SMODS.Atlas { -- Spectal cards
   py = 188
 }
 
-
 --[[
 
+Fire and Ice
+
+]]
+
+
+if debug_mode then
+  --[[
+  SMODS.Enhancement({
+    key = 'fire',
+    config = {
+      mult = 0,
+      extra = {
+        b_mult = 5,
+        c_mult = 1,
+      }
+    },
+    loc_vars = function (self)
+      self.config.extra.c_mult = 0
+      self.config.b_mult = 5
+        for k, v in pairs(G.playing_cards) do
+          if v.config.center == G.P_CENTERS.m_sbc_fire then 
+            self.config.extra.c_mult = self.config.extra.c_mult + 1
+          end
+        end
+      self.config.mult = self.config.extra.b_mult * self.config.extra.c_mult
+      print("mult | ",self.config.mult)
+      return {
+        vars = { self.config.mult , self.config.extra.b_mult , self.config.extra.c_mult},
+      }
+    end,
+  })
+  ]]
+  --[[
+    SMODS.Enhancement({
+    key = 'fire',
+    config = {
+      mult = 0,
+      extra = {
+        b_mult = 5,
+        c_mult = 1,
+      }
+    },
+    loc_vars = function (self, info_queue, card)
+      return {
+        vars = { self.config.mult , self.config.extra.b_mult , self.config.extra.c_mult},
+      }
+    end,
+    calculate = function (self, card, context, effect)
+      if context.individual then
+        card.config.extra.c_mult = 0
+        card.config.extra.b_mult = 5
+          for k, v in pairs(G.playing_cards) do
+            if v.config.center == G.P_CENTERS.m_sbc_fire then 
+              card.config.extra.c_mult = card.config.extra.c_mult + 1
+            end
+          end
+        card.config.mult = card.config.extra.b_mult * card.config.extra.c_mult
+      end
+    end
+  })
+  ]]
+  --[[
+  SMODS.Enhancement({
+    key = 'fire',
+    config = {
+      mult = 0,
+      extra = {
+        b_mult = 5,
+        c_mult = 1,
+      }
+    },
+    loc_vars = function (self, info_queue, card)
+      print(card.ability.b_mult)
+      return {
+        vars = { card.ability.mult, card.ability.extra.b_mult, card.ability.extra.c_mult},
+      }
+    end,
+    calculate = function (self, card, context, effect)
+      if context.individual then
+        card.ability.extra.c_mult = 0
+        card.ability.extra.b_mult = 5
+          for k, v in pairs(G.playing_cards) do
+            if v.config.center == G.P_CENTERS.m_sbc_fire then 
+              card.ability.extra.c_mult = card.ability.extra.c_mult + 1
+            end
+          end
+         card.ability.mult = card.ability.extra.b_mult * card.ability.extra.c_mult
+      end
+    end
+  })
+end
+-]]
+
+  SMODS.Enhancement({
+    key = 'ice',
+    config = {
+      bonus = 10
+    },
+    loc_vars = function (self)
+      return {
+        vars = { self.config.bonus }
+      }
+    end
+  })
+end
+--[[
 
 Jonklers
 
-
 ]] 
+
+if debug_mode then
+
+  SMODS.Joker { -- Test Joker
+    key = 'test_joker',
+    config = { extra = { value_1 = 0} },
+    loc_vars = function(self, info_queue, card)
+      return { vars = { card.ability.extra.value_1 } }
+    end,
+    rarity = 4,
+    cost = 6,
+    calculate = function(self, card, context)
+      if context.joker_main then
+        C =  C + 2
+        print(C)
+      end
+    end
+  }
+
+
+
+  SMODS.Joker { -- CC joker 1
+    key = 'Chrysanthemum',
+    config = { extra = { value_1 = 0} },
+    loc_vars = function(self, info_queue, card)
+      return { vars = { card.ability.extra.value_1 } }
+    end,
+    rarity = 4,
+    cost = 6,
+    atlas = "rd-jokers-1",
+    pos = { x = 2 , y = 0},
+    calculate = function(self, card, context)
+      if context.setting_blind or context.before or context.pre_discard then
+        card.ability.extra.value_1 = #G.deck.cards
+      end
+    end
+  }
+end
+
+SMODS.Joker { -- Skipshot
+  key = 'skipshot',
+  config = { extra = { 
+    dollars = 1, 
+    skipped = 0,
+    x_dollars = 3
+  } },
+  loc_vars = function(self, info_queue, card)
+    return { vars = { 
+      card.ability.extra.dollars, 
+      card.ability.extra.skipped,
+      card.ability.extra.x_dollars
+  } }
+  end,
+  rarity = 2,
+  cost = 6,
+  atlas = "rd-jokers-1",
+  pos = { x = 3 , y = 0},
+  calc_dollar_bonus = function(self, card)
+    return card.ability.extra.dollars
+  end,
+  calculate = function(self, card, context)
+    if context.skip_blind then
+      card.ability.extra.skipped = card.ability.extra.skipped + 1
+      card.ability.extra.dollars = (card.ability.extra.skipped * card.ability.extra.x_dollars) + 1
+      card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Upgrade!"})
+    end
+  end
+}
 
 SMODS.Joker { -- Speed trial
   key = 'Speed_trial',
-  loc_txt = {
-    name = 'Speed trial',
-    text = {
-        "Gains {X:mult,C:white}x#2#{} Mult when {C:attention}blind{} is selected",
-        "Loses {X:mult,C:white}x#3#{} Mult when {C:attention}discarding{}",
-        "{C:inactive}Currently {X:mult,C:white}x#1#{C:inactive} Mult{}",
-        "{C:inactive,s:0.8}(Mult can't go below 1x)"
-    }
-  },
   config = { extra = { Xmult = 1.0 , Xmult_gain = 0.2 , Xmult_lose = 0.1} },
   loc_vars = function(self, info_queue, card)
     return { vars = { card.ability.extra.Xmult, card.ability.extra.Xmult_gain , card.ability.extra.Xmult_lose} }
@@ -171,13 +345,6 @@ SMODS.Joker { -- Speed trial
 
 SMODS.Joker { -- Battleworn insomniac
   key = 'battleworn_insomniac',
-  loc_txt = {
-    name = 'Battleworn Insomniac',
-    text = {
-      "{X:mult,C:white}x#1#{} Mult every {C:attention}#4#th{} played #2#",
-      "{C:inactive}#3# remaining{}"
-    }
-  },
   config = { extra = { Xmult = 2.0, rank = 7 , count = 0 , active = 7 , status = false} },
   loc_vars = function(self, info_queue, card)
     return { vars = { 
@@ -214,14 +381,6 @@ end
 
 SMODS.Joker { -- Fire and Ice
   key = 'ADOFAI',
-  loc_txt = {
-    name = 'Fire and Ice',
-    text = {
-      "When hand is played, alternate",
-      "between {X:chips,C:white}x2{} Chips and {X:mult,C:white}x2{} Mult",
-      "{C:inactive}Currently {#4#}x#1#{C:inactive} #5#{}"
-    }
-  },
   rarity = 2,
   cost = 6,
   atlas = "adofai-jokers-1",
@@ -264,18 +423,7 @@ SMODS.Joker { -- Fire and Ice
 
 SMODS.Joker { --Oneshot
   key = 'oneshot',
-  loc_txt = {
-    name = 'Oneshot',
-    text = {
-      "Gains {X:mult,C:white}x#4#{} Mult",
-      "when {C:attention}played hand{}",
-      "has {C:attention}1{} card",
-      "{C:inactive} (Currently {X:mult,C:white}x#3#{C:inactive} Mult){}",
-      "{C:inactive,s:0.7}(Idea by {C:dark_edition,s:0.7}#1#{C:inactive,s:0.7}){}",
-      "{C:inactive,s:0.7}(Sprite by {C:dark_edition,s:0.7}#2#{C:inactive,s:0.7}){}"
-    }
-  },
-  config = { extra = { idea = "deathmodereal", sprite = "k_lemun" ,  Xmult = 1.0 , Xmult_gain = 0.1 } },
+  config = { extra = { idea = "deathmodereal", sprite = "k_lemun" ,  Xmult = 1.0 , Xmult_gain = 0.05 } },
   loc_vars = function(self, info_queue, card)
     return { vars = {
       card.ability.extra.idea,
@@ -305,16 +453,6 @@ SMODS.Joker { --Oneshot
 
 SMODS.Joker { --Practice mode
   key = 'practice_mode',
-  loc_txt = {
-    name = 'Practice mode',
-    text = {
-      "{C:chips}#1#{} Chips",
-      "Gains {C:chips}+#2#{} Chips per {C:attention}discarded card{}",
-      "Resets when {C:attention:}boss blind{} is defeated",
-      "{C:inactive} (Currently {C:chips}#3##1#{C:inactive} Chips){}",
-      "{C:inactive,s:0.8}(Cannot subtract Chips){}"
-    }
-  },
   config = { extra = { chips = -20 , chips_gain = 5, prefix = ""} },
   loc_vars = function(self, info_queue, card)
     return { vars = {
@@ -347,20 +485,11 @@ SMODS.Joker { --Practice mode
 
 SMODS.Joker { -- Spin 2 win
   key = 'spin2win',
-  loc_txt = {
-    name = 'Spin to Win',
-    text = {
-      "Gains {X:mult,C:white}x#2#{} Mult every time the", 
-      "shop is {C:attention}rerolled{} or the",
-      "{C:attention} wheel of fortune{} is used",
-      "{C:inactive}(Currently {X:mult,C:white}x#1#{C:inactive} Mult){}"
-    }
-  },
   rarity = 3,
   cost = 6,
   atlas = "adofai-jokers-1",
   pos = { x = 3 , y = 0},
-  config = { extra = { Xmult = 1.0 , Xmult_gain = 0.1} },
+  config = { extra = { Xmult = 1.0 , Xmult_gain = 0.2} },
   loc_vars = function(self, info_queue, card)
     return { vars = {
         card.ability.extra.Xmult,
@@ -369,11 +498,11 @@ SMODS.Joker { -- Spin 2 win
     } }
   end,
   calculate = function(self, card, context)
-    if context.using_consumeable or context.reroll_shop then
+    if context.using_consumeable and context.consumeable.ability.name == "The Wheel of Fortune" then
       card.ability.extra.Xmult = card.ability.extra.Xmult + card.ability.extra.Xmult_gain
       card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Upgrade!"})
     end
-    if context.joker_main then
+    if context.joker_main and ( card.ability.extra.Xmult > 1.00) then
       return {
         Xmult_mod = card.ability.extra.Xmult,
         message = localize { type = 'variable', key = 'a_xmult', vars = { card.ability.extra.Xmult } }
@@ -381,60 +510,36 @@ SMODS.Joker { -- Spin 2 win
     end
   end
 }
-
-SMODS.Joker { -- Midspin
-  key = 'midspin',
-  loc_txt = {
-    name = 'Midspin',
-    text = {
-      "Gains {C:mult}+#2#{} Mult every time a", 
-      "card is {C:attention}retriggered{}",
-      "{C:inactive}(Currently {C:mult}+#1#{C:inactive} Mult){}",
-      '{C:inactive,s:0.8}"It\'s called a midspin cuz you spin it in the middle of your turn"{}'
-    }
-  },
-  rarity = 2,
-  cost = 6,
-  atlas = "adofai-jokers-1",
-  pos = { x = 4 , y = 0},
-  config = { extra = { mult = 0 , mult_gain = 3 , times_fired = 0 , timse_to_fire = 0} },
-  loc_vars = function(self, info_queue, card)
-    return { vars = {
-        card.ability.extra.mult,
-        card.ability.extra.mult_gain,
-        card.ability.extra.times_fired,
-        card.ability.extra.times_to_fire
-    } }
-  end,
-  calculate = function(self, card, context)
-    if context.before then
-      card.ability.extra.times_fired = 0
-      card.ability.extra.times_to_fire = #context.full_hand
+if debug_mode then
+  SMODS.Joker { -- Midspin
+    key = 'midspin',
+    rarity = 2,
+    cost = 6,
+    atlas = "adofai-jokers-1",
+    pos = { x = 4 , y = 0},
+    config = { extra = { mult = 7 , mult_gain = 7 } },
+    loc_vars = function(self, info_queue, card)
+      return { vars = {
+          card.ability.extra.mult,
+          card.ability.extra.mult_gain,
+      } }
+    end,
+    calculate = function(self, card, context)
+      if ( context.repetition and context.other_card.seal == "Red" and context.cardarea == G.play) then
+        card.ability.extra.mult = card.ability.extra.mult + card.ability.extra.mult_gain
+        card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Upgrade!"})
+      end
+      if context.joker_main then
+        return {
+          mult_mod = card.ability.extra.mult,
+          message = localize { type = 'variable', key = 'a_mult', vars = { card.ability.extra.mult } }
+        }
+      end
     end
-    if context.repetition and card.ability.extra.times_fired < card.ability.extra.times_to_fire then
-      card.ability.extra.mult = card.ability.extra.mult + card.ability.extra.mult_gain
-      card.ability.extra.times_fired = card.ability.extra.times_fired + 1
-      card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Upgrade!"})
-    end
-    if context.joker_main then
-      return {
-        mult_mod = card.ability.extra.mult,
-        message = localize { type = 'variable', key = 'a_mult', vars = { card.ability.extra.mult } }
-      }
-    end
-  end
-}
-
+  }
+end
 SMODS.Joker { -- Samurai
   key = 'samurai',
-  loc_txt = {
-    name = 'Samurai',
-    text = {
-      "Scored 7s give {C:mult}+#3# mult", 
-      "{C:inactive,s:0.7}(Idea by {C:dark_edition,s:0.7}#1#{C:inactive,s:0.7}){}",
-      "{C:inactive,s:0.7}(Sprite by {C:dark_edition,s:0.7}#2#{C:inactive,s:0.7}){}"
-    }
-  },
   rarity = 1,
   cost = 6,
   atlas = "rd-jokers-1",
@@ -459,16 +564,7 @@ SMODS.Joker { -- Samurai
 
 SMODS.Joker { -- NHH
   key = 'NHH',
-  loc_txt = {
-    name = 'No hints here',
-    text = {
-      "Gives between {X:mult,C:white}x0.75{} and ",
-      "{X:mult,C:white}x1.5{} Mult randomly", 
-      "{C:inactive,s:0.7}(Idea by {C:dark_edition,s:0.7}#1#{C:inactive,s:0.7}){}",
-      "{C:inactive,s:0.7}(Sprite by {C:dark_edition,s:0.7}#2#{C:inactive,s:0.7}){}"
-    }
-  },
-  rarity = 1,
+  rarity = 3,
   cost = 6,
   atlas = "rd-jokers-1",
   pos = { x = 0 , y = 0},
@@ -500,34 +596,27 @@ SMODS.Joker { -- NHH
 Spectral
 
 ]]
-SMODS.Consumable {
-  key = "twirl",
-  set = "Spectral",
-  atlas = "spectral",
-  pos = { x = 0 , y = 0},
-  loc_txt = {
-    name = "Twirl",
-    text = {
-      "Changes the suit of each card ",
-      "in the entirety of your deck.",
-      "{C:inactive} (Spades > Diamonds{}",
-      "{C:inactive}> Club > Hearts){}"
-    }
-  },
-  can_use = function (self, card)
-    return true
-  end,
-  use = function(self, card, area, copier)
-    local conv = {
-        Spades = "Diamonds",
-        Clubs = "Hearts",
-        Diamonds = "Spades",
-        Hearts = "Clubs",
-    }
-    for _, v in ipairs(G.deck.cards) do
-        if conv[v.base.suit] then
-            v:change_suit(conv[v.base.suit])
-        end
-    end
+if debug_mode then
+  SMODS.Consumable {
+    key = "twirl",
+    set = "Spectral",
+    atlas = "spectral",
+    pos = { x = 0 , y = 0},
+    can_use = function (self, card)
+      return true
+    end,
+    use = function(self, card, area, copier)
+      local conv = {
+          Spades = "Diamonds",
+          Clubs = "Hearts",
+          Diamonds = "Spades",
+          Hearts = "Clubs",
+      }
+      for _, v in ipairs(G.deck.cards) do
+          if conv[v.base.suit] then
+              v:change_suit(conv[v.base.suit])
+          end
+      end
+  end
+  }
 end
-}
