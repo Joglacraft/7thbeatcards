@@ -385,7 +385,7 @@ SMODS.Joker { -- Fire and Ice
   cost = 6,
   atlas = "adofai-jokers-1",
   pos = { x = 1 , y = 0},
-  config = { extra = { Xmult = 2.0 , Xchips = 2.0 , isFire= false , status_a = "X:chips,C:white" , status_b = "Chips"} },
+  config = { extra = { Xmult = 2 , Xchips = 2 , isFire= false , status_a = "X:chips,C:white" , status_b = "Chips"} },
   loc_vars = function(self, info_queue, card)
     return { vars = {
         card.ability.extra.Xmult,
@@ -398,18 +398,18 @@ SMODS.Joker { -- Fire and Ice
   calculate = function (self,card,context) 
     if context.joker_main then
       if not context.blueprint then
-        if card.ability.extra.isFire then
+        if card.ability.extra.isFire then -- Fire means mult
           card.ability.extra.isFire = false
           card.ability.extra.status_a = "X:mult,C:white"
-          card.ability.extra.status_b = "Mult"
+          card.ability.extra.status_b = "Chips"
           return {
             Xmult_mod = card.ability.extra.Xmult,
-            message = localize({ type = "variable", key = "a_xmult", vars = { card.ability.extra.Xmod } }),
+            message = localize({ type = "variable", key = "a_xmult", vars = { card.ability.extra.Xmult } }),
           }
-        else
-          card.ability.extra.isFire = true
+        else -- Ice means chips
+          card.ability.extra.isFire = true 
           card.ability.extra.status_a = "X:chips,C:white"
-          card.ability.extra.status_b = "Chips"
+          card.ability.extra.status_b = "Mult"
           return {
             message = localize({ type = "variable", key = "a_xchips", vars = { card.ability.extra.Xchips } }),
             Xchip_mod = card.ability.extra.Xchips,
@@ -544,18 +544,16 @@ SMODS.Joker { -- Samurai
   cost = 6,
   atlas = "rd-jokers-1",
   pos = { x = 0 , y = 0},
-  config = {  extra = { idea = "nil", sprite = "nil" , mult = 7 } },
+  config = {  extra = { mult = 7 } },
   loc_vars = function(self, info_queue, card)
     return { vars = {
-        card.ability.extra.idea,
-        card.ability.extra.sprite,
         card.ability.extra.mult
     } }
   end,
   calculate = function (self, card, context)
     if context.scoring_hand and context.cardarea == G.play and context.other_card:get_id() == 7 then
       return {
-        mult_mod = card.ability.extra.mult,
+        mult = card.ability.extra.mult,
         message = localize { type = 'variable', key = 'a_mult', vars = { card.ability.extra.mult } }
       }
     end

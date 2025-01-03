@@ -56,7 +56,7 @@ return {
 			["j_sbc_samurai"] = {
 				["name"] = "Samurai",
 				["text"] = {
-					"Scored 7s give {C:mult}+#3# mult",
+					"Scored 7s give {C:mult}+#1# mult",
 					"{C:inactive,s:0.7}(Idea by {C:dark_edition,s:0.7}dzar{C:inactive,s:0.7}){}",
 
 				},
@@ -146,4 +146,11 @@ return {
 			},
 		},
 	},
+	["misc"] = {
+		["v_dictionary"] = {
+			["a_xchips"] = {
+				"X#1# Chips"
+			}
+		}
+	}
 }
