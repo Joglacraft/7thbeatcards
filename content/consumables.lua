@@ -12,15 +12,8 @@ SMODS.Consumable { -- Summer
   config = {
     extra = {
       cards = 3
-    }
-  },
-  loc_vars = function(self, info_queue, center)
-    return {
-      vars = {
-        center.ability.extra.cards
-      }
-    }
-  end,
+    },
+},
   can_use = function(self,card)
     if G and G.hand then
         if #G.hand.highlighted ~= 0 and #G.hand.highlighted <= card.ability.extra.cards then --if cards in hand highlighted are above 0 but below the configurable value then
@@ -53,15 +46,9 @@ SMODS.Consumable { -- Winter
   config = {
     extra = {
       cards = 3
-    }
+    },
   },
-  loc_vars = function(self, info_queue, center)
-    return {
-      vars = {
-        center.ability.extra.cards
-      }
-    }
-  end,
+
   can_use = function(self,card)
     if G and G.hand then
         if #G.hand.highlighted ~= 0 and #G.hand.highlighted <= card.ability.extra.cards then --if cards in hand highlighted are above 0 but below the configurable value then

@@ -166,19 +166,21 @@ return {
 			["c_sbc_summer"] = {
 				["name"] = "The summer",
 				["text"] = {
-					"Enhances {C:attention}#1#{} selected",
+					"Enhances {C:attention}3{} selected",
 					"cards into {C:attention}fire cards{}",
 					"{C:inactive,s:0.7}(Idea by {C:dark_edition,s:0.7}dzar{C:inactive,s:0.7}){}",
 					"{C:inactive,s:0.7}(Idea by {C:dark_edition,s:0.7}dzar{C:inactive,s:0.7}){}",
+			        "{C:red,s:0.6}(Values are subject to changes){}",
 				}
 			},
 			["c_sbc_winter"] = {
 				["name"] = "The winter",
 				["text"] = {
-					"Enhances {C:attention}#1#{} selected",
+					"Enhances {C:attention}3{} selected",
 					"cards into {C:attention}ice cards{}",
 					"{C:inactive,s:0.7}(Idea by {C:dark_edition,s:0.7}dzar{C:inactive,s:0.7}){}",
 					"{C:inactive,s:0.7}(Idea by {C:dark_edition,s:0.7}deathmodereal{C:inactive,s:0.7}){}",
+					"{C:red,s:0.6}(Values are subject to changes){}",
 				}
 			}
 		},

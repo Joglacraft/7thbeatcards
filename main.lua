@@ -1,5 +1,5 @@
 local config = SMODS.current_mod.config
-local debug_mode = false
+local debug_mode = true
 
 
 --[[
