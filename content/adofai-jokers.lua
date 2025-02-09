@@ -162,3 +162,80 @@ SMODS.Joker { -- NHH
     end
   end
 }
+
+SMODS.Joker { --Third sun
+  key = 'third_sun',
+  rarity = 2,
+  cost = 5,
+  atlas = "adofai-jokers-1",
+  pos = { x = 2 , y = 0},
+  config = { extra = { chips = 0, chips_gain = 5, mult = 0, mult_gain = 3, other_ice = 0, other_fire = 0 } },
+  update = function(self, card, dt)
+        if not G.SETTINGS.paused and G.jokers then
+            card.ability.extra.other_ice = 0
+            card.ability.extra.other_fire = 0
+            for k, v in pairs(G.playing_cards) do
+                if v.config.center == G.P_CENTERS.m_sbc_ice then card.ability.extra.other_ice = card.ability.extra.other_ice + 1
+                 card.ability.extra.chips = card.ability.extra.chips_gain * card.ability.extra.other_ice end
+                if v.config.center == G.P_CENTERS.m_sbc_fire then card.ability.extra.other_fire = card.ability.extra.other_fire + 1
+                 card.ability.extra.mult = card.ability.extra.mult_gain * card.ability.extra.other_fire end
+            end
+        end
+    end,
+    
+    loc_vars = function(self, info_queue, center)
+        return {vars = {
+            center.ability.extra.chips,
+            center.ability.extra.chips_gain,
+            center.ability.extra.mult,
+            center.ability.extra.mult_gain
+        }}
+    end,
+
+    calculate = function(self, card, context)
+     if context.joker_main then
+            return {
+            mult_mod = card.ability.extra.mult,
+            chips = card.ability.extra.chips,
+             message = { "Me when:" }
+            }
+        end
+    end
+}
+
+SMODS.Joker { --Third sun
+  key = 'totonou',
+  rarity = 2,
+  cost = 5,
+  atlas = "adofai-jokers-1",
+  pos = { x = 9 , y = 0},
+  config = { extra = { Xmult = 2 } },
+    loc_vars = function(self, info_queue, center)
+        return {vars = {
+            center.ability.extra.Xmult
+        }}
+    end,
+
+    calculate = function(self, card, context)
+	local fried = 0
+	local rice = 0
+	if G.jokers and context.joker_main then
+	for k, v in ipairs(context.scoring_hand) do
+                if v.config.center == G.P_CENTERS.m_sbc_ice then
+				rice = 1
+				end
+			end
+	for k, v in ipairs(context.scoring_hand) do
+                if v.config.center == G.P_CENTERS.m_sbc_fire then
+				fried = 1
+				end
+			end
+	if fried == 1 and rice == 1 then
+            return {
+            Xmult_mod = card.ability.extra.Xmult,
+			message = 'X' .. card.ability.extra.Xmult
+            }
+		end
+		end
+		end
+}
