@@ -140,7 +140,23 @@ return {
 
 				},
 			},
+			["j_sbc_third_sun"] = {
+				["name"] = "Third Sun",
+				["text"] = {
+					"Gains {C:chips}+#2#{} chips for every {C:attention}Ice card{}.",
+					"Gains {C:mult}+#4#{} mult for every {C:attention}Fire card{}.",
+					"Currently {C:chips}+#1#{} chips and {C:mult}+#3#{} mult.",
+
+				},
+			},
+            ["j_sbc_totonou"] = {
+				["name"] = "Totonou",
+				["text"] = {
+					"{X:red,C:white}X#1#{} Mult if played hand contains",
+					"a {C:attention}Fire card{} and {C:attention}Ice card{}.",
 		},
+	},
+},
 		["Enhanced"] = {
 			["m_sbc_ice"] = {
 				["name"] = "Ice",

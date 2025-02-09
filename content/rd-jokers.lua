@@ -11,10 +11,9 @@ SMODS.Joker { -- Samurai
     } }
   end,
   calculate = function (self, card, context)
-    if context.scoring_hand and context.cardarea == G.play and context.other_card:get_id() == 7 then
+     if context.cardarea == G.play and context.individual and context.other_card:get_id() == 7 then
       return {
-        mult = card.ability.extra.mult,
-        message = localize { type = 'variable', key = 'a_mult', vars = { card.ability.extra.mult } }
+        mult = card.ability.extra.mult
       }
     end
   end
