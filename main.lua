@@ -9,83 +9,18 @@ Load everything
 ]]
 
 local contents = {
-  "rd-jokers",
-  "adofai-jokers",
-  "consumables",
+  "util",
+  "atlas",
+  "joker",
+  "tarot",
+  "spectral",
+  'enhancement',
   "misc"
 }
 
 
 for k, v in pairs(contents) do
-  assert(SMODS.load_file('/content/'..v..'.lua'))()
-end
-
-
-
-
-local old_back_apply_to_run = Back.apply_to_run
-function Back.apply_to_run(self)
-  old_back_apply_to_run(self)
-  if self.effect.config.sbc_speed_trial then
-    G.E_MANAGER:add_event(Event({
-      func = function()
-        local card = create_card('Joker', G.jokers, nil, nil, nil, nil, 'j_sbc_Speed_trial', nil)
-        card:add_to_deck()
-        G.jokers:emplace(card)
-        return true
-      end
-    }))
-  end
-  if self.effect.config.sbc_battleworn_insomniac then
-    G.E_MANAGER:add_event(Event({
-      func = function()
-        local card = create_card('Joker', G.jokers, nil, nil, nil, nil, 'j_sbc_battleworn_insomniac', nil)
-        card:add_to_deck()
-        G.jokers:emplace(card)
-        return true
-      end
-    }))
-  end
-  if self.effect.config.sbc_oneshot then
-    G.E_MANAGER:add_event(Event({
-      func = function()
-        local card = create_card('Joker', G.jokers, nil, nil, nil, nil, 'j_sbc_oneshot', nil)
-        card:add_to_deck()
-        G.jokers:emplace(card)
-        return true
-      end
-    }))
-  end
-  if self.effect.config.sbc_practice_mode then
-    G.E_MANAGER:add_event(Event({
-      func = function()
-        local card = create_card('Joker', G.jokers, nil, nil, nil, nil, 'j_sbc_practice_mode', nil)
-        card:add_to_deck()
-        G.jokers:emplace(card)
-        return true
-      end
-    }))
-  end
-  if self.effect.config.sbc_astro then
-    G.E_MANAGER:add_event(Event({
-      func = function()
-        local card = create_card('Joker', G.jokers, nil, nil, nil, nil, 'j_sbc_astro', nil)
-        card:add_to_deck()
-        G.jokers:emplace(card)
-        return true
-      end
-    }))
-  end
-  if self.effect.config.blueprint then
-    G.E_MANAGER:add_event(Event({
-      func = function()
-        local card = create_card('Joker', G.jokers, nil, nil, nil, nil, 'j_blueprint', nil)
-        card:add_to_deck()
-        G.jokers:emplace(card)
-        return true
-      end
-    }))
-  end
+  assert(SMODS.load_file('/scr/'..v..'.lua'))()
 end
 
 if debug_mode then _RELEASE_MODE = false end -- DEBUG MODE
@@ -141,58 +76,6 @@ end
 
 ]]
 
-SMODS.Atlas { -- RD jokers
-  key = "rd-jokers-1",
-  path = "rd-jokers-1.png",
-  px = 71,
-  py = 95
-}
-
-SMODS.Atlas { -- ADOFAI jokers
-  key = "adofai-jokers-1",
-  path = "adofai-jokers-1.png",
-  px = 71,
-  py = 95
-}
-
-SMODS.Atlas { -- Spectal cards
-  key = "spectral",
-  path = "spectral.png",
-  px = 128,
-  py = 188
-}
-
-SMODS.Atlas { -- Spectal cards
-  key = "deck",
-  path = "cards.png",
-  px = 71,
-  py = 95
-}
-
-SMODS.Atlas { -- Tarot
-  key = "tarot",
-  path = "tarot.png",
-  px = 71,
-  py = 95
-}
-
-SMODS.Atlas { -- Deck backs
-  key = "back",
-  path = "back.png",
-  px = 275,
-  py = 371
-}
-
-SMODS.Atlas { -- Boss blind
-  key = "blind",
-  path = "zodiac.png",
-  px = 34,
-  py = 34,
-  atlas_table = 'ANIMATION_ATLAS',
-  frames = 21
-}
-
-
 
 --[[
 
@@ -200,71 +83,6 @@ Fire and Ice
 
 ]]
 
-SMODS.Enhancement({
-  key = 'fire',
-  atlas = "deck",
-  pos = { x = 0 , y = 0},
-  config = {
-    mult = 0, --mult it gives
-    extra = {
-      mult_gain = 5, --mult it adds
-      other_card = 1, -- Count of other cards
-    }
-  },
-  loc_vars = function (self, info_queue, card)
-    card.ability.mult = 0
-    card.ability.extra.mult_gain = 5
-    card.ability.extra.other_card = 0
-    if G.jokers then
-        for k, v in pairs(G.playing_cards) do
-          if v.config.center == G.P_CENTERS.m_sbc_ice or v.config.center == G.P_CENTERS.m_sbc_wind then 
-            card.ability.extra.other_card = card.ability.extra.other_card + 1
-            card.ability.mult = card.ability.extra.mult_gain * card.ability.extra.other_card
-          end
-      end
-    end
-      return {
-      vars = {
-        card.ability.mult,
-        card.ability.extra.mult_gain,
-        card.ability.extra.other_card
-      }
-      }
-  end
-})
-
-SMODS.Enhancement({
-  key = 'ice',
-  atlas = "deck",
-  pos = { x = 1 , y = 0},
-  config = {
-    bonus = 0,
-    extra = {
-      bonus_gain = 10,
-      other_card = 1,
-  }
-  },
-  loc_vars = function (self, info_queue, card)
-    card.ability.bonus = 0
-    card.ability.extra.bonus_gain = 10
-    card.ability.extra.other_card = 0
-    if G.jokers then
-      for k, v in pairs(G.playing_cards) do
-        if v.config.center == G.P_CENTERS.m_sbc_fire or v.config.center == G.P_CENTERS.m_sbc_wind then 
-          card.ability.extra.other_card = card.ability.extra.other_card + 1
-          card.ability.bonus = card.ability.extra.bonus_gain * card.ability.extra.other_card
-        end
-      end
-    end
-    return {
-      vars = {
-        card.ability.bonus,
-        card.ability.extra.bonus_gain,
-        card.ability.extra.other_card
-      }
-    }
-  end
-})
 
 --[[
 
@@ -273,25 +91,6 @@ Jonklers / Debug
 ]] 
 
 if debug_mode then
-
-  SMODS.Joker { -- Test Joker
-    key = 'test_joker',
-    config = { extra = { value_1 = 0} },
-    loc_vars = function(self, info_queue, card)
-      return { vars = { card.ability.extra.value_1 } }
-    end,
-    rarity = 4,
-    cost = 6,
-    calculate = function(self, card, context)
-      if context.joker_main then
-        C =  C + 2
-        print(C)
-      end
-    end
-  }
-
-
-
   SMODS.Joker { -- CC joker 1
     key = 'Chrysanthemum',
     config = { extra = { value_1 = 0} },
