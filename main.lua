@@ -1,5 +1,5 @@
 local config = SMODS.current_mod.config
-local debug_mode = false
+local debug_mode = true
 
 
 --[[
@@ -183,6 +183,14 @@ SMODS.Atlas { -- Deck backs
   py = 371
 }
 
+SMODS.Atlas { -- Boss blind
+  key = "blind",
+  path = "zodiac.png",
+  px = 34,
+  py = 34,
+  atlas_table = 'ANIMATION_ATLAS',
+  frames = 21
+}
 
 
 

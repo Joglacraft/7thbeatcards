@@ -9,6 +9,15 @@ return {
 				},
 			},
 		},
+		["Blind"] = {
+			["bl_sbc_zodiac"] = {
+				["name"] = "The Zodiac",
+				["text"] = {
+					"All Fire and Ice cards",
+					"are debuffed",
+				},
+			},
+		},
 		["Joker"] = {
 			["j_sbc_test_joker"] = {
 				["name"] = "Test joker",
@@ -54,7 +63,7 @@ return {
 					"between {X:chips,C:white}x2{} Chips and {X:mult,C:white}x2{} Mult",
 					"{C:inactive}Currently {#4#}x#1#{C:inactive} #5#{}",
 					"{C:inactive,s:0.7}(Idea by {C:dark_edition,s:0.7}deathmodereal{C:inactive,s:0.7}){}",
-					"{C:inactive,s:0.7}(Idea by {C:dark_edition,s:0.7}deathmodereal{C:inactive,s:0.7}){}",
+					"{C:inactive,s:0.7}(Sprite by {C:dark_edition,s:0.7}deathmodereal{C:inactive,s:0.7}){}",
 				},
 			},
 			["j_sbc_samurai"] = {
@@ -115,7 +124,7 @@ return {
 					"{C:attention}The Wheel of Fortune{} is used",
 					"{C:inactive}(Currently {X:mult,C:white}x#1#{C:inactive} Mult){}",
 					"{C:inactive,s:0.7}(Idea by {C:dark_edition,s:0.7}dzar{C:inactive,s:0.7}){}",
-					"{C:inactive,s:0.7}(Sprite by {C:dark_edition,s:0.7}dzar{C:inactive,s:0.7}){}",
+					"{C:inactive,s:0.7}(Sprite by {C:dark_edition,s:0.7}deathmodereal{C:inactive,s:0.7}){}",
 				},
 				["mod_conv"] = {'m_glass'}
 			},
@@ -145,7 +154,7 @@ return {
 				["text"] = {
 					"Gains {C:chips}+#2#{} chips for every {C:attention}Ice card{}.",
 					"Gains {C:mult}+#4#{} mult for every {C:attention}Fire card{}.",
-					"Currently {C:chips}+#1#{} chips and {C:mult}+#3#{} mult.",
+					"{C:inactive}Currently {C:chips}+#1#{C:inactive} chips and {C:mult}+#3#{C:inactive} mult.",
 
 				},
 			},
@@ -154,8 +163,18 @@ return {
 				["text"] = {
 					"{X:red,C:white}X#1#{} Mult if played hand contains",
 					"a {C:attention}Fire card{} and {C:attention}Ice card{}.",
-		},
-	},
+				},
+			},
+			["j_sbc_emomomo"] = {
+				["name"] = "Emomomo",
+				["text"] = {
+					"Gains either {C:mult}+#4#{} mult, {C:chips}+#6#{} chips,",
+					"or {X:red,C:white}X#2#{} mult every",
+					"{C:attention}Face card{} played.",
+					"{C:inactive}Currently {C:mult}+#3#{C:inactive} mult, {C:chips}+#5#{C:inactive} chips,",
+					" and {X:red,C:white}X#1#{C:inactive} mult.",
+				},
+			},
 },
 		["Enhanced"] = {
 			["m_sbc_ice"] = {
@@ -193,6 +212,18 @@ return {
 				["text"] = {
 					"Enhances {C:attention}#1#{} selected",
 					"cards into {C:attention}ice cards{}",
+					"{C:inactive,s:0.7}(Idea by {C:dark_edition,s:0.7}dzar{C:inactive,s:0.7}){}",
+					"{C:inactive,s:0.7}(Idea by {C:dark_edition,s:0.7}deathmodereal{C:inactive,s:0.7}){}",
+				}
+			},
+			["c_sbc_butterfly"] = {
+				["name"] = "Butterfly",
+				["text"] = {
+					"Destroys {C:attention}#1#{} random",
+					"cards in deck, and",
+					"increases hand size by",
+					"{C:attention}#2#{} for {C:attention}#3#{} antes",
+					"{C:inactive}#4# antes left.",
 					"{C:inactive,s:0.7}(Idea by {C:dark_edition,s:0.7}dzar{C:inactive,s:0.7}){}",
 					"{C:inactive,s:0.7}(Idea by {C:dark_edition,s:0.7}deathmodereal{C:inactive,s:0.7}){}",
 				}

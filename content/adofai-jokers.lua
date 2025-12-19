@@ -193,17 +193,18 @@ SMODS.Joker { --Third sun
     end,
 
     calculate = function(self, card, context)
-     if context.joker_main then
-            return {
-            mult_mod = card.ability.extra.mult,
-            chips = card.ability.extra.chips,
-             message = { "Me when:" }
-            }
+		if context.joker_main then
+			return {
+			remove_default_message = true,
+			mult_mod = card.ability.extra.mult,
+			chips = card.ability.extra.chips,
+			message = '+' .. card.ability.extra.chips .. ' +' .. card.ability.extra.mult
+			}
         end
     end
 }
 
-SMODS.Joker { --Third sun
+SMODS.Joker { --Totonou
   key = 'totonou',
   rarity = 2,
   cost = 5,
@@ -217,25 +218,69 @@ SMODS.Joker { --Third sun
     end,
 
     calculate = function(self, card, context)
-	local fried = 0
-	local rice = 0
-	if G.jokers and context.joker_main then
-	for k, v in ipairs(context.scoring_hand) do
-                if v.config.center == G.P_CENTERS.m_sbc_ice then
-				rice = 1
+		local fried = 0
+		local rice = 0
+		if G.jokers and context.joker_main then
+			for k, v in ipairs(context.scoring_hand) do
+				if v.config.center == G.P_CENTERS.m_sbc_ice then
+					rice = 1
 				end
 			end
-	for k, v in ipairs(context.scoring_hand) do
-                if v.config.center == G.P_CENTERS.m_sbc_fire then
-				fried = 1
+			for k, v in ipairs(context.scoring_hand) do
+				if v.config.center == G.P_CENTERS.m_sbc_fire then
+					fried = 1
 				end
 			end
-	if fried == 1 and rice == 1 then
-            return {
-            Xmult_mod = card.ability.extra.Xmult,
-			message = 'X' .. card.ability.extra.Xmult
-            }
+			if fried == 1 and rice == 1 then
+				return {
+					Xmult_mod = card.ability.extra.Xmult,
+					message = 'X' .. card.ability.extra.Xmult
+				}
+			end
 		end
+	end
+}
+
+SMODS.Joker { -- Emomomo
+	key = 'emomomo',
+	rarity = 3,
+	cost = 5,
+	atlas = "adofai-jokers-1",
+	pos = { x = 1 , y = 0},
+	config = { extra = { Xmult = 1, Xmult_gain = 0.1, mult = 0, mult_gain = 5, chips = 0, chips_gain = 10}},
+	loc_vars = function(self, info_queue, center)
+		return { vars = {
+			center.ability.extra.Xmult,
+			center.ability.extra.Xmult_gain,
+			center.ability.extra.mult,
+			center.ability.extra.mult_gain,
+			center.ability.extra.chips,
+			center.ability.extra.chips_gain,
+		} }
+	end,
+	calculate = function(self, card, context)
+		if context.individual then
+            if context.cardarea == G.play then
+				if context.other_card:is_face() then
+					local chance = pseudorandom_element({1, 2, 3}, pseudoseed('bitch'))
+					if chance == 1 then
+						card.ability.extra.Xmult = card.ability.extra.Xmult + card.ability.extra.Xmult_gain
+					end
+					if chance == 2 then
+						card.ability.extra.mult = card.ability.extra.mult + card.ability.extra.mult_gain
+					end
+					if chance == 3 then
+						card.ability.extra.chips = card.ability.extra.chips + card.ability.extra.chips_gain
+					end
+				end
+			end
 		end
+		if context.joker_main then
+			return {
+				Xmult_mod = card.ability.extra.Xmult,
+				mult_mod = card.ability.extra.mult,
+				chips = card.ability.extra.chips,
+			}
 		end
+	end
 }

@@ -86,6 +86,61 @@ end,
   end
 }
 
+SMODS.Consumable { -- Butterfly
+	key = "butterfly",
+	set = "Tarot",
+	atlas = "tarot",
+	pos = { x = 3, y = 0},
+	config = {
+		extra = {
+		  cards = 10,
+		  hand_size = 2,
+		  rounds = 3,
+		  antes = 0,
+		  used = false,
+		}
+	},
+	loc_vars = function(self, info_queue, center)
+		return {
+			vars = {
+				center.ability.extra.cards,
+				center.ability.extra.hand_size,
+				center.ability.extra.rounds,
+				center.ability.extra.antes
+			}
+		}
+	end,
+	can_use = function(self,card)
+		if G and G.deck and #G.deck.cards > 10 and card.ability.extra.used == false then return true end
+		return false
+	end,
+	use = function (self, card, area, copier)	  
+		local cardstodie = pseudorandom_element(G.deck, pseudoseed('dyinggg'))
+		for i = 1, #cardstodie do
+			if i <= card.ability.extra.cards then
+				cardstodie[i]:dissolve()
+			end
+			if i > card.ability.extra.cards then
+				break;
+			end
+		end
+		G.hand:change_size(card.ability.extra.hand_size)
+		card.ability.extra.antes = card.ability.extra.rounds
+		card.ability.extra.used = true
+	end,
+	keep_on_use = function (self, card)
+		return true
+	end,
+	calculate = function(self, card, context)
+		if context.end_of_round and G.GAME.blind.boss and card.ability.extra.used == true then
+			card.ability.extra.antes = card.ability.extra.antes - 1
+			if card.ability.extra.antes == 0 then
+				G.hand:change_size(-card.ability.extra.hand_size)
+			end
+		end
+	end,
+}
+
 --[[
 
 Spectral
